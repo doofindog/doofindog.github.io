@@ -529,7 +529,7 @@ modal.addEventListener("click", (e) => {
 });
 
 // ------------------------------------------------------------
-// "GAME PROGRAMMER" glitch
+// "GAME PROGRAMMER" glitch (one time only)
 // ------------------------------------------------------------
 const glitchEls = $$(".glitch");
 if (glitchEls.length && !reduceMotion) {
@@ -544,75 +544,23 @@ if (glitchEls.length && !reduceMotion) {
     });
     clearTimer = setTimeout(() => glitchEls.forEach((el) => el.classList.remove("is-glitching")), GLITCH_MS + 50);
   };
-  const loop = () => {
-    if (!document.hidden && onScreen("projects")) glitch();
-    setTimeout(loop, 3500 + Math.random() * 3000);
+  // Plays a single time: right after load, or the first time Projects is shown.
+  let played = false;
+  let ready = false;
+  const playOnce = () => {
+    if (played || !ready || !onScreen("projects")) return;
+    played = true;
+    setTimeout(glitch, 300);
   };
   (document.fonts ? document.fonts.ready : Promise.resolve()).then(() => {
-    setTimeout(glitch, 300);
-    setTimeout(loop, 4000);
+    ready = true;
+    playOnce();
   });
-  glitchEls[0].closest("h1").addEventListener("pointerenter", (e) => {
-    if (e.pointerType === "mouse") glitch();
-  });
+  document.addEventListener("screenchange", playOnce);
 }
 
 // ------------------------------------------------------------
-// Portrait: starts pixelated, sharpens on hover / focus / tap
-// ------------------------------------------------------------
-const portrait = $(".portrait");
-if (portrait) {
-  const img = $("img", portrait);
-  const cvs = $(".portrait__pixels", portrait);
-  const ctx = cvs.getContext("2d");
-  let steps = [];
-
-  const drawAt = (cols) => {
-    const box = portrait.getBoundingClientRect();
-    const aspect = box.height / box.width || 1.25;
-    const rows = Math.round(cols * aspect);
-    cvs.width = cols;
-    cvs.height = rows;
-    // object-fit: cover crop of the source image
-    const scale = Math.max(cols / img.naturalWidth, rows / img.naturalHeight);
-    const sw = cols / scale;
-    const sh = rows / scale;
-    ctx.imageSmoothingEnabled = true;
-    ctx.drawImage(img, (img.naturalWidth - sw) / 2, (img.naturalHeight - sh) / 2, sw, sh, 0, 0, cols, rows);
-  };
-
-  const clear = () => {
-    steps.forEach(clearTimeout);
-    steps = [];
-  };
-  const sharpen = () => {
-    clear();
-    if (reduceMotion) return portrait.classList.add("is-sharp");
-    [40, 80].forEach((cols, i) => steps.push(setTimeout(() => drawAt(cols), i * 90)));
-    steps.push(setTimeout(() => portrait.classList.add("is-sharp"), 180));
-  };
-  const pixelate = () => {
-    clear();
-    drawAt(22);
-    portrait.classList.remove("is-sharp");
-  };
-
-  const ready = () => drawAt(22);
-  if (img.complete && img.naturalWidth) ready();
-  else img.addEventListener("load", ready, { once: true });
-  document.addEventListener("screenchange", (e) => {
-    if (e.detail === "about" && img.naturalWidth) pixelate();
-  });
-
-  portrait.addEventListener("pointerenter", (e) => e.pointerType === "mouse" && sharpen());
-  portrait.addEventListener("pointerleave", (e) => e.pointerType === "mouse" && pixelate());
-  portrait.addEventListener("focus", sharpen);
-  portrait.addEventListener("blur", pixelate);
-  portrait.addEventListener("click", () => (portrait.classList.contains("is-sharp") ? pixelate() : sharpen()));
-}
-
-// ------------------------------------------------------------
-// Background: pixel sun setting over a moving grid
+// Background: pixel sun setting behind layered mountains
 // ------------------------------------------------------------
 const scene = $("#scene");
 if (scene) {
@@ -621,102 +569,126 @@ if (scene) {
   let w = 0;
   let h = 0;
   let stars = [];
+  let trees = [];
   let boost = 1; // cheat mode speeds things up
+
+  // Far → near. `y` is the ridge's height (0 = top, 1 = bottom), `amp` its roughness.
+  const LAYERS = [
+    { color: "#ffbd94", y: 0.57, amp: 0.16, seed: 1.3, snow: true },
+    { color: "#f79d7e", y: 0.63, amp: 0.13, seed: 4.1 },
+    { color: "#f78671", y: 0.69, amp: 0.1, seed: 7.7 },
+    { color: "#dd7062", y: 0.74, amp: 0.08, seed: 2.9 },
+    { color: "#b4565b", y: 0.8, amp: 0.065, seed: 9.4 },
+    { color: "#6b1e3a", y: 0.86, amp: 0.05, seed: 5.6 },
+    { color: "#3d0222", y: 0.92, amp: 0.035, seed: 3.3, trees: true },
+  ];
+
+  // Smooth, repeatable ridge line from a few layered sine waves.
+  const ridge = (x, layer) => {
+    const s = layer.seed;
+    return (
+      (1 - Math.abs(Math.sin(x * 0.009 + s))) * 1.1 - 0.4 +
+      Math.sin(x * 0.027 + s * 2.1) * 0.3 +
+      Math.sin(x * 0.063 + s * 3.7) * 0.15
+    );
+  };
 
   const resize = () => {
     w = Math.ceil(innerWidth / PX);
     h = Math.ceil(innerHeight / PX);
     scene.width = w;
     scene.height = h;
-    stars = Array.from({ length: Math.round((w * h) / 900) }, () => ({
+    stars = Array.from({ length: Math.round((w * h) / 1400) }, () => ({
       x: Math.random() * w,
-      y: Math.random() * h * 0.55,
+      y: Math.random() * h * 0.4,
       p: Math.random() * Math.PI * 2,
     }));
+    // Pine trees along the nearest ridge, at fixed world positions.
+    trees = [];
+    for (let x = 0; x < 4000; x += 9 + Math.floor(Math.random() * 22)) {
+      trees.push({ x, size: 9 + Math.floor(Math.random() * 12) });
+    }
   };
 
-  const mix = (a, b, t) => a.map((v, i) => Math.round(v + (b[i] - v) * t));
-  const SUN_TOP = [255, 214, 102];
-  const SUN_BOTTOM = [245, 110, 56];
+  const drawTree = (x, baseY, size, color) => {
+    ctx.fillStyle = color;
+    const trunk = Math.max(1, Math.round(size / 6));
+    ctx.fillRect(x - Math.floor(trunk / 2), baseY - trunk * 2, trunk, trunk * 2 + 1);
+    for (let row = 0; row < size; row++) {
+      const half = Math.floor(((row + 1) / size) * (size * 0.38)) + (row % 3 === 2 ? 1 : 0);
+      ctx.fillRect(x - half, baseY - trunk * 2 - size + row, half * 2 + 1, 1);
+    }
+  };
+
+  // Scene clock: drives the star twinkle (faster in cheat mode).
+  let clock = 0;
+  let prevTime = null;
 
   const draw = (time) => {
-    const t = time / 1000;
-    const horizon = Math.round(h * 0.74);
+    if (prevTime !== null) clock += (Math.min(time - prevTime, 100) / 1000) * boost;
+    prevTime = time;
+    const t = clock;
 
-    // Sky
-    const sky = ctx.createLinearGradient(0, 0, 0, horizon);
-    sky.addColorStop(0, "#0e1413");
-    sky.addColorStop(0.65, "#13191a");
-    sky.addColorStop(1, "#2b1a12");
+    // Sky: plum night fading into a dusky-red glow at the horizon.
+    const sky = ctx.createLinearGradient(0, 0, 0, h * 0.75);
+    sky.addColorStop(0, "#28021b");
+    sky.addColorStop(0.45, "#4a0c2c");
+    sky.addColorStop(0.8, "#b4565b");
+    sky.addColorStop(1, "#f3a772");
     ctx.fillStyle = sky;
-    ctx.fillRect(0, 0, w, horizon);
+    ctx.fillRect(0, 0, w, h);
 
-    // Stars
+    // Stars in the dark upper sky
     stars.forEach((s) => {
-      const a = 0.25 + 0.35 * Math.sin(t * 1.5 + s.p);
-      ctx.fillStyle = `rgba(243, 230, 208, ${Math.max(a, 0.05)})`;
+      const a = 0.2 + 0.35 * Math.sin(t * 1.5 + s.p);
+      ctx.fillStyle = `rgba(255, 244, 236, ${Math.max(a, 0.05)})`;
       ctx.fillRect(Math.round(s.x), Math.round(s.y), 1, 1);
     });
 
-    // Sun: drawn row by row so the lower half gets scrolling slats.
-    const r = Math.round(Math.min(w * 0.15, h * 0.27));
-    const cx = Math.round(w / 2);
-    const cy = horizon - Math.round(r * 0.25);
-
-    const glow = ctx.createRadialGradient(cx, cy, r * 0.6, cx, cy, r * 2.2);
-    glow.addColorStop(0, "rgba(245, 110, 56, 0.22)");
-    glow.addColorStop(1, "rgba(245, 110, 56, 0)");
+    // Sun with a soft halo
+    const r = Math.round(Math.min(w * 0.09, h * 0.16));
+    const cx = Math.round(w * 0.5);
+    const cy = Math.round(h * 0.52);
+    const glow = ctx.createRadialGradient(cx, cy, r * 0.8, cx, cy, r * 3.2);
+    glow.addColorStop(0, "rgba(251, 236, 205, 0.45)");
+    glow.addColorStop(1, "rgba(255, 212, 176, 0)");
     ctx.fillStyle = glow;
-    ctx.fillRect(0, 0, w, horizon);
+    ctx.fillRect(0, 0, w, h);
+    ctx.fillStyle = "#fdd974";
+    for (let dy = -r; dy <= r; dy++) {
+      const half = Math.round(Math.sqrt(r * r - dy * dy));
+      ctx.fillRect(cx - half, cy + dy, half * 2, 1);
+    }
 
-    const slatStart = cy - r * 0.15;
-    const period = Math.max(6, Math.round(r / 6));
-    const scroll = (t * 6 * boost) % period;
-    for (let y = cy - r; y < horizon; y++) {
-      const dy = y - cy;
-      const half = Math.sqrt(Math.max(r * r - dy * dy, 0));
-      if (!half) continue;
-      if (y > slatStart) {
-        const depth = (y - slatStart) / (horizon - slatStart); // 0..1
-        const gap = 1 + Math.floor(depth * period * 0.55);
-        if ((y - slatStart + scroll) % period < gap) continue;
+    // Mountain layers, drawn one pixel column at a time.
+    LAYERS.forEach((layer) => {
+      const offset = 0;
+      const base = h * layer.y;
+      const amp = h * layer.amp;
+      ctx.fillStyle = layer.color;
+      for (let x = 0; x < w; x++) {
+        const top = Math.round(base - ridge(x + offset, layer) * amp);
+        ctx.fillRect(x, top, 1, h - top);
       }
-      const c = mix(SUN_TOP, SUN_BOTTOM, (y - (cy - r)) / (2 * r));
-      ctx.fillStyle = `rgb(${c[0]}, ${c[1]}, ${c[2]})`;
-      ctx.fillRect(Math.round(cx - half), y, Math.round(half * 2), 1);
-    }
-
-    // Ground
-    ctx.fillStyle = "#0a0f0e";
-    ctx.fillRect(0, horizon, w, h - horizon);
-
-    // Grid: horizontal lines rush toward the viewer.
-    const groundH = h - horizon;
-    const LINES = 14;
-    const phase = (t * 0.35 * boost) % 1;
-    for (let i = 0; i < LINES; i++) {
-      const p = (i + phase) / LINES;
-      const y = horizon + Math.round(groundH * Math.pow(p, 2.2));
-      ctx.fillStyle = `rgba(67, 214, 181, ${0.08 + p * 0.4})`;
-      ctx.fillRect(0, y, w, 1);
-    }
-    // Grid: lines converging on the vanishing point.
-    ctx.strokeStyle = "rgba(67, 214, 181, 0.28)";
-    ctx.lineWidth = 1;
-    ctx.beginPath();
-    const spacing = w / 12;
-    for (let j = -14; j <= 14; j++) {
-      ctx.moveTo(cx + 0.5, horizon);
-      ctx.lineTo(cx + j * spacing * 2.2 + 0.5, h);
-    }
-    ctx.stroke();
-
-    // Horizon haze
-    const haze = ctx.createLinearGradient(0, horizon - 2, 0, horizon + groundH * 0.25);
-    haze.addColorStop(0, "rgba(245, 110, 56, 0.35)");
-    haze.addColorStop(1, "rgba(10, 15, 14, 0)");
-    ctx.fillStyle = haze;
-    ctx.fillRect(0, horizon - 2, w, groundH * 0.25);
+      if (layer.snow) {
+        // Snow caps on the highest peaks of the far range.
+        ctx.fillStyle = "#fff4ec";
+        const line = base - amp * 0.62;
+        for (let x = 0; x < w; x++) {
+          const top = Math.round(base - ridge(x + offset, layer) * amp);
+          if (top < line) ctx.fillRect(x, top, 1, Math.min(Math.round(line - top), 3 + ((x * 7) % 3)));
+        }
+      }
+      if (layer.trees) {
+        const span = 4000;
+        trees.forEach((tree) => {
+          const x = Math.round(((tree.x - offset) % span + span) % span);
+          if (x > w + 12) return;
+          const ground = Math.round(base - ridge(x + offset, layer) * amp) + 1;
+          drawTree(x, ground, tree.size, layer.color);
+        });
+      }
+    });
   };
 
   resize();

@@ -1,23 +1,24 @@
 /* ============================================================
    Aaron Fernandes — Portfolio (arcade edition)
 
-   Layout: a game title screen. A pixel sun sets over a moving grid
+   Layout: a game title screen. A pixel sun sets behind layered mountains
    behind everything; a top menu switches between three screens
    (Projects / Career / About) in one centred column.
-   Palette is taken from the portrait: teal shadows, orange sun.
+   Palette: a sunset over layered mountains (plum, coral, peach, sun yellow).
    ============================================================ */
 
 :root {
-  --bg: #0e1413;
-  --panel: #18211f;
-  --panel-2: #202b28;
-  --line: rgba(243, 230, 208, 0.13);
-  --text: #f3e6d0;
-  --muted: #a8a193;
-  --sun: #ffb03a;
-  --ember: #f56e38;
-  --teal: #43d6b5;
-  --shadow: #7a2f16;         /* hard pixel drop shadow */
+  /* Sunset-over-the-mountains palette: plum night, coral and peach light, yellow sun. */
+  --bg: #28021b;
+  --panel: #3a0a2a;
+  --panel-2: #4a1336;
+  --line: rgba(255, 228, 214, 0.15);
+  --text: #fff4ec;
+  --muted: #d9afa8;
+  --sun: #ffbb71;            /* peach: headline accent, hovers */
+  --ember: #ff6464;          /* coral: primary actions, active card */
+  --gold: #fdd974;           /* sun yellow: labels, tags, filters */
+  --shadow: #b4565b;         /* hard pixel drop shadow (dusky red) */
 
   --font-pixel: "Pixelify Sans", "Press Start 2P", ui-monospace, monospace;
   --font-arcade: "Press Start 2P", "Pixelify Sans", ui-monospace, monospace;
@@ -54,7 +55,7 @@ button { font: inherit; color: inherit; }
 
 ::selection { background: var(--ember); color: var(--bg); }
 
-:focus-visible { outline: 2px solid var(--teal); outline-offset: 3px; }
+:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
 
 .visually-hidden {
   position: absolute;
@@ -114,7 +115,7 @@ button { font: inherit; color: inherit; }
   top: 0;
   z-index: 100;
   padding-top: env(safe-area-inset-top, 0px);
-  background: rgba(14, 20, 19, 0.78);
+  background: rgba(40, 2, 27, 0.78);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   border-bottom: 1px solid var(--line);
@@ -135,7 +136,6 @@ button { font: inherit; color: inherit; }
   letter-spacing: 0.06em;
   white-space: nowrap;
 }
-.logo span { color: var(--ember); }
 
 .tabs { display: flex; gap: 6px; }
 
@@ -149,7 +149,7 @@ button { font: inherit; color: inherit; }
   border-radius: 6px;
   transition: color 0.2s, background 0.2s;
 }
-.tabs a:hover { color: var(--text); background: rgba(243, 230, 208, 0.06); }
+.tabs a:hover { color: var(--text); background: rgba(255, 228, 214, 0.06); }
 
 .tabs a[aria-current="page"] {
   color: var(--bg);
@@ -223,8 +223,8 @@ main { flex: 1; }
   line-height: 1.4;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--teal);
-  background: rgba(14, 20, 19, 0.6);
+  color: var(--gold);
+  background: rgba(40, 2, 27, 0.6);
   border: 1px solid var(--line);
   border-radius: 4px;
 }
@@ -243,10 +243,14 @@ main { flex: 1; }
 .title--left { text-align: left; }
 
 .lede {
-  max-width: 560px;
+  max-width: 580px;
+  padding: 8px 16px;
   font-size: 16px;
-  color: var(--muted);
-  text-shadow: 0 1px 0 #000, 0 0 12px var(--bg);
+  color: var(--text);
+  background: rgba(40, 2, 27, 0.72);
+  border-radius: 8px;
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
 }
 
 /* Glitch: an RGB split that fires every few seconds (toggled from script.js). */
@@ -273,7 +277,7 @@ main { flex: 1; }
 }
 .glitch.is-glitching::after {
   opacity: 0.9;
-  color: var(--teal);
+  color: var(--gold);
   animation: glitch-slice-b 0.4s steps(3) both;
 }
 
@@ -350,11 +354,14 @@ main { flex: 1; }
 }
 
 .filters__label {
+  padding: 6px 8px;
   font-family: var(--font-arcade);
   font-size: 9px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--muted);
+  color: var(--text);
+  background: rgba(40, 2, 27, 0.72);
+  border-radius: 4px;
 }
 
 .filters__list {
@@ -373,14 +380,14 @@ main { flex: 1; }
   font-size: 15px;
   font-weight: 500;
   color: var(--text);
-  background: rgba(24, 33, 31, 0.92);
+  background: rgba(58, 10, 42, 0.92);
   border: 2px solid var(--line);
   border-radius: 6px;
   box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.45);
   cursor: pointer;
   transition: background 0.15s, color 0.15s, border-color 0.15s, transform 0.1s, box-shadow 0.1s;
 }
-.filter:hover { border-color: var(--teal); }
+.filter:hover { border-color: var(--gold); }
 .filter:active { transform: translate(3px, 3px); box-shadow: none; }
 
 .filter__count {
@@ -391,17 +398,17 @@ main { flex: 1; }
   line-height: 1.4;
   text-align: center;
   color: var(--muted);
-  background: rgba(243, 230, 208, 0.08);
+  background: rgba(255, 228, 214, 0.08);
   border-radius: 3px;
 }
 
 .filter[aria-pressed="true"] {
   color: var(--bg);
-  background: var(--teal);
-  border-color: var(--teal);
-  box-shadow: 3px 3px 0 #1d5e50;
+  background: var(--gold);
+  border-color: var(--gold);
+  box-shadow: 3px 3px 0 #a0731c;
 }
-.filter[aria-pressed="true"] .filter__count { color: var(--bg); background: rgba(14, 20, 19, 0.18); }
+.filter[aria-pressed="true"] .filter__count { color: var(--bg); background: rgba(40, 2, 27, 0.18); }
 
 /* ---------- Project deck (3D carousel) ---------- */
 
@@ -477,7 +484,7 @@ main { flex: 1; }
   position: relative;
   aspect-ratio: 16 / 10;
   overflow: hidden;
-  background: #070a0a;
+  background: #1a0111;
 }
 .card__thumb img,
 .card__thumb video {
@@ -507,7 +514,7 @@ main { flex: 1; }
   position: absolute;
   inset: 0;
   pointer-events: none;
-  background: radial-gradient(circle at var(--sx, 50%) var(--sy, 0%), rgba(255, 220, 160, 0.18), transparent 45%);
+  background: radial-gradient(circle at var(--sx, 50%) var(--sy, 0%), rgba(255, 214, 176, 0.2), transparent 45%);
   opacity: 0;
   transition: opacity 0.3s;
 }
@@ -521,7 +528,7 @@ main { flex: 1; }
   line-height: 1.5;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--teal);
+  color: var(--gold);
 }
 .card__title {
   font-family: var(--font-pixel);
@@ -536,8 +543,8 @@ main { flex: 1; }
   padding: 2px 7px;
   font-family: var(--font-pixel);
   font-size: 12px;
-  color: var(--teal);
-  border: 1px solid rgba(67, 214, 181, 0.35);
+  color: var(--gold);
+  border: 1px solid rgba(253, 217, 116, 0.35);
   border-radius: 3px;
 }
 .card__cta {
@@ -624,9 +631,9 @@ main { flex: 1; }
 }
 
 @keyframes dot-pulse {
-  0%   { box-shadow: 0 0 0 0 rgba(245, 110, 56, 0.55); }
-  70%  { box-shadow: 0 0 0 10px rgba(245, 110, 56, 0); }
-  100% { box-shadow: 0 0 0 0 rgba(245, 110, 56, 0); }
+  0%   { box-shadow: 0 0 0 0 rgba(255, 100, 100, 0.55); }
+  70%  { box-shadow: 0 0 0 10px rgba(255, 100, 100, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(255, 100, 100, 0); }
 }
 
 .log__card {
@@ -635,7 +642,7 @@ main { flex: 1; }
   justify-content: space-between;
   gap: 16px;
   padding: 18px 22px;
-  background: rgba(24, 33, 31, 0.96);
+  background: rgba(58, 10, 42, 0.96);
   border: 2px solid var(--line);
   border-radius: var(--radius);
   box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.4);
@@ -646,7 +653,7 @@ a.log__card:hover {
   transform: translate(-2px, -2px);
   box-shadow: 8px 8px 0 var(--shadow);
 }
-.is-current .log__card { border-color: rgba(245, 110, 56, 0.6); }
+.is-current .log__card { border-color: rgba(255, 100, 100, 0.6); }
 
 .log__when {
   display: flex;
@@ -704,43 +711,20 @@ a.log__card:hover .log__arrow { color: var(--sun); transform: translate(3px, -3p
   border: 2px solid var(--line);
   border-radius: var(--radius);
   box-shadow: 10px 10px 0 var(--shadow);
-  cursor: crosshair;
 }
-.portrait img,
-.portrait__pixels {
+.portrait img {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
-.portrait__pixels {
-  image-rendering: pixelated;
-  transition: opacity 0.25s;
-}
-.portrait.is-sharp .portrait__pixels { opacity: 0; }
-
-.portrait__hint {
-  position: absolute;
-  left: 12px;
-  bottom: 12px;
-  padding: 6px 9px;
-  font-family: var(--font-arcade);
-  font-size: 7px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--text);
-  background: rgba(14, 20, 19, 0.8);
-  border-radius: 3px;
-  transition: opacity 0.25s;
-}
-.portrait.is-sharp .portrait__hint { opacity: 0; }
 
 .skills {
   display: grid;
   gap: 16px;
   padding: 20px;
-  background: rgba(14, 20, 19, 0.94);
+  background: rgba(40, 2, 27, 0.94);
   border: 2px solid var(--line);
   border-radius: var(--radius);
 }
@@ -773,7 +757,7 @@ a.log__card:hover .log__arrow { color: var(--sun); transform: translate(3px, -3p
   border-radius: 4px;
   transition: background 0.15s, color 0.15s, border-color 0.15s;
 }
-.tags a:hover { color: var(--bg); background: var(--teal); border-color: var(--teal); }
+.tags a:hover { color: var(--bg); background: var(--gold); border-color: var(--gold); }
 
 .about__main {
   display: grid;
@@ -781,7 +765,7 @@ a.log__card:hover .log__arrow { color: var(--sun); transform: translate(3px, -3p
   justify-items: start;
   max-width: 62ch;
   padding: 32px;
-  background: rgba(14, 20, 19, 0.94);
+  background: rgba(40, 2, 27, 0.94);
   border: 2px solid var(--line);
   border-radius: var(--radius);
 }
@@ -795,7 +779,7 @@ a.log__card:hover .log__arrow { color: var(--sun); transform: translate(3px, -3p
   font-size: 18px;
   color: var(--sun);
   border-left: 4px solid var(--ember);
-  background: rgba(245, 110, 56, 0.07);
+  background: rgba(255, 100, 100, 0.07);
 }
 
 .about__actions { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 6px; }
@@ -824,7 +808,7 @@ a.log__card:hover .log__arrow { color: var(--sun); transform: translate(3px, -3p
   border-radius: 4px;
   cursor: pointer;
 }
-.email__copy:hover { color: var(--bg); background: var(--teal); border-color: var(--teal); }
+.email__copy:hover { color: var(--bg); background: var(--gold); border-color: var(--gold); }
 
 /* ---------- Project modal ---------- */
 
@@ -840,7 +824,7 @@ a.log__card:hover .log__arrow { color: var(--sun); transform: translate(3px, -3p
   overflow: auto;
 }
 .modal::backdrop {
-  background: rgba(5, 8, 8, 0.78);
+  background: rgba(20, 1, 13, 0.82);
   backdrop-filter: blur(3px);
 }
 .modal[open] { animation: modal-in 0.35s var(--ease); }
@@ -859,7 +843,7 @@ a.log__card:hover .log__arrow { color: var(--sun); transform: translate(3px, -3p
   align-content: center;
   gap: 10px;
   padding: 16px;
-  background: #070a0a;
+  background: #1a0111;
 }
 .modal__media img,
 .modal__media video {
@@ -887,7 +871,7 @@ a.log__card:hover .log__arrow { color: var(--sun); transform: translate(3px, -3p
   border-radius: 4px;
   cursor: pointer;
 }
-.media-switch button[aria-pressed="true"] { color: var(--bg); background: var(--teal); border-color: var(--teal); }
+.media-switch button[aria-pressed="true"] { color: var(--bg); background: var(--gold); border-color: var(--gold); }
 
 .modal__info {
   display: grid;
@@ -910,8 +894,8 @@ a.log__card:hover .log__arrow { color: var(--sun); transform: translate(3px, -3p
 .features { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
 .features li {
   padding: 10px 12px;
-  background: rgba(14, 20, 19, 0.6);
-  border-left: 3px solid var(--teal);
+  background: rgba(40, 2, 27, 0.6);
+  border-left: 3px solid var(--gold);
   border-radius: 0 4px 4px 0;
 }
 
@@ -967,10 +951,10 @@ a.log__card:hover .log__arrow { color: var(--sun); transform: translate(3px, -3p
 /* ---------- Cheat mode (Konami code) ---------- */
 
 body.cheat .title__accent,
-body.cheat .logo span { animation: rainbow 1.2s linear infinite; }
+body.cheat .logo { animation: rainbow 1.2s linear infinite; }
 @keyframes rainbow {
   0%   { color: var(--sun); }
-  33%  { color: var(--teal); }
+  33%  { color: var(--gold); }
   66%  { color: var(--ember); }
   100% { color: var(--sun); }
 }
@@ -988,6 +972,7 @@ body.cheat .logo span { animation: rainbow 1.2s linear infinite; }
   .tabs { order: 3; width: 100%; justify-content: center; }
   .tabs a { padding: 7px 12px; font-size: 15px; }
   .screen { padding-block: 40px 56px; }
+  #career-title { font-size: min(calc((100vw - 32px) / 7.4), 64px); }
   .title { font-size: min(calc((100vw - 32px) / 6.6), 64px); text-shadow: 4px 4px 0 var(--shadow); }
   /* Filters become one swipeable row so the deck stays near the top. */
   .filters { gap: 8px; margin-top: 28px; }
