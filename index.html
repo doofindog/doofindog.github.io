@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Aaron Fernandes — Game Programmer</title>
+  <meta name="description" content="Aaron Fernandes is a senior game programmer building games and the tools behind them in Unity.">
+  <meta name="theme-color" content="#0e1413">
+  <meta property="og:title" content="Aaron Fernandes — Game Programmer">
+  <meta property="og:description" content="Crafting virtual worlds to redefine your reality.">
+  <meta property="og:image" content="assets/portrait.jpg">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' shape-rendering='crispEdges'%3E%3Crect width='16' height='16' fill='%230e1413'/%3E%3Crect x='4' y='3' width='8' height='2' fill='%23ffb03a'/%3E%3Crect x='3' y='5' width='10' height='2' fill='%23ff9a35'/%3E%3Crect x='3' y='8' width='10' height='1' fill='%23f7833a'/%3E%3Crect x='4' y='10' width='8' height='1' fill='%23f56e38'/%3E%3Crect x='0' y='12' width='16' height='1' fill='%2343d6b5'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;500;600;700&family=Press+Start+2P&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css?v=32">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <!-- Background: pixel sun setting over a moving grid (drawn in script.js), plus CRT scanlines -->
+  <canvas class="scene" id="scene" aria-hidden="true"></canvas>
+  <div class="crt" aria-hidden="true"></div>
+
+  <header class="topbar">
+    <div class="wrap topbar__inner">
+      <a class="logo" href="#projects" aria-label="Aaron Fernandes, home">AARON <span>FERNANDES</span></a>
+
+      <nav class="tabs" aria-label="Sections">
+        <a href="#projects" data-tab="projects">Projects</a>
+        <a href="#career" data-tab="career">Career</a>
+        <a href="#about" data-tab="about">About</a>
+      </nav>
+
+      <div class="socials">
+        <a href="https://github.com/doofindog" target="_blank" rel="noopener" aria-label="GitHub">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.4 5.4 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></svg>
+        </a>
+        <a href="https://www.linkedin.com/in/aaron-fernandes-6a45601a1" target="_blank" rel="noopener" aria-label="LinkedIn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect width="4" height="12" x="2" y="9"/><circle cx="4" cy="4" r="2"/></svg>
+        </a>
+        <button type="button" data-copy-email aria-label="Copy email address">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main" class="wrap">
+
+    <!-- ============ PROJECTS ============ -->
+    <section class="screen" id="screen-projects" data-screen="projects" aria-labelledby="projects-title">
+      <div class="screen__head">
+        <p class="chip">Senior Game Programmer · Ninja Gaming</p>
+        <h1 class="title" id="projects-title" aria-label="Game Programmer">
+          <span class="glitch" data-text="Game" aria-hidden="true">Game</span>
+          <span class="glitch title__accent" data-text="Programmer" aria-hidden="true">Programmer</span>
+        </h1>
+        <p class="lede">Crafting virtual worlds to redefine your reality. Drag, swipe or use the arrows, then open the highlighted project.</p>
+      </div>
+
+      <div class="filters" role="group" aria-labelledby="filters-label">
+        <span class="filters__label" id="filters-label">Filter</span>
+        <div class="filters__list" data-filters></div>
+      </div>
+
+      <div class="deck" data-deck>
+        <div class="deck__stage" data-stage role="region" aria-roledescription="carousel" aria-label="Projects"></div>
+        <div class="deck__controls">
+          <button class="pixel-btn" type="button" data-prev aria-label="Previous project">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="square" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
+          </button>
+          <div class="deck__dots" data-dots role="tablist" aria-label="Choose project"></div>
+          <button class="pixel-btn" type="button" data-next aria-label="Next project">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="square" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+          </button>
+        </div>
+        <p class="visually-hidden" aria-live="polite" data-announce></p>
+      </div>
+    </section>
+
+    <!-- ============ CAREER ============ -->
+    <section class="screen" id="screen-career" data-screen="career" aria-labelledby="career-title" hidden>
+      <div class="screen__head">
+        <p class="chip">Career log</p>
+        <h1 class="title" id="career-title"><span data-years>7</span>+ Years of <span class="title__accent">Experience</span></h1>
+        <p class="lede">From game design to tools to senior game programming.</p>
+      </div>
+
+      <ol class="log">
+        <li class="log__entry is-current">
+          <div class="log__card">
+            <div>
+              <p class="log__when">Feb 2026 – Present <span class="log__now">Now playing</span></p>
+              <h2 class="log__company">Ninja Gaming</h2>
+              <p class="log__role">Senior Game Programmer</p>
+            </div>
+          </div>
+        </li>
+        <li class="log__entry">
+          <a class="log__card" href="https://tojgames.net/" target="_blank" rel="noopener">
+            <div>
+              <p class="log__when">Mar 2025 – Feb 2026</p>
+              <h2 class="log__company">TOJ Games</h2>
+              <p class="log__role">Senior Game Programmer</p>
+            </div>
+            <svg class="log__arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" aria-hidden="true"><path d="M7 17 17 7"/><path d="M7 7h10v10"/></svg>
+          </a>
+        </li>
+        <li class="log__entry">
+          <a class="log__card" href="https://www.kwalee.com/" target="_blank" rel="noopener">
+            <div>
+              <p class="log__when">Dec 2020 – Jan 2025</p>
+              <h2 class="log__company">Kwalee</h2>
+              <p class="log__role">Tools Programmer</p>
+            </div>
+            <svg class="log__arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" aria-hidden="true"><path d="M7 17 17 7"/><path d="M7 7h10v10"/></svg>
+          </a>
+        </li>
+        <li class="log__entry">
+          <a class="log__card" href="https://www.playshifu.com/" target="_blank" rel="noopener">
+            <div>
+              <p class="log__when">Jul 2020 – Nov 2020</p>
+              <h2 class="log__company">PlayShifu</h2>
+              <p class="log__role">Junior Unity Programmer</p>
+            </div>
+            <svg class="log__arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" aria-hidden="true"><path d="M7 17 17 7"/><path d="M7 7h10v10"/></svg>
+          </a>
+        </li>
+        <li class="log__entry">
+          <a class="log__card" href="https://byjus.com/" target="_blank" rel="noopener">
+            <div>
+              <p class="log__when">Feb 2019 – Mar 2020</p>
+              <h2 class="log__company">BYJU'S</h2>
+              <p class="log__role">Game Designer</p>
+            </div>
+            <svg class="log__arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" aria-hidden="true"><path d="M7 17 17 7"/><path d="M7 7h10v10"/></svg>
+          </a>
+        </li>
+      </ol>
+    </section>
+
+    <!-- ============ ABOUT ============ -->
+    <section class="screen" id="screen-about" data-screen="about" aria-labelledby="about-title" hidden>
+      <div class="about">
+        <div class="about__side">
+          <figure class="portrait" tabindex="0" aria-label="Portrait of Aaron Fernandes. Hover or tap to sharpen.">
+            <img src="assets/portrait.jpg" alt="Aaron Fernandes in profile against an orange circle" width="800" height="1080">
+            <canvas class="portrait__pixels" aria-hidden="true"></canvas>
+            <figcaption class="portrait__hint">Hover to sharpen</figcaption>
+          </figure>
+
+          <div class="skills">
+            <div class="skills__group">
+              <h2 class="skills__label">Engines</h2>
+              <ul class="tags">
+                <li><a href="https://unity.com/" target="_blank" rel="noopener">Unity</a></li>
+                <li><a href="https://www.unrealengine.com/" target="_blank" rel="noopener">Unreal Engine</a></li>
+                <li><a href="https://developers.google.com/ar" target="_blank" rel="noopener">ARCore</a></li>
+                <li><a href="https://gamemaker.io/" target="_blank" rel="noopener">GameMaker</a></li>
+                <li><a href="https://www.libsdl.org/" target="_blank" rel="noopener">SDL2</a></li>
+              </ul>
+            </div>
+            <div class="skills__group">
+              <h2 class="skills__label">Languages</h2>
+              <ul class="tags">
+                <li><a href="https://learn.microsoft.com/dotnet/csharp/" target="_blank" rel="noopener">C#</a></li>
+                <li><a href="https://isocpp.org/" target="_blank" rel="noopener">C++</a></li>
+                <li><a href="https://www.python.org/" target="_blank" rel="noopener">Python</a></li>
+                <li><a href="https://www.gnu.org/software/bash/" target="_blank" rel="noopener">Bash</a></li>
+                <li><a href="https://developer.mozilla.org/docs/Web/JavaScript" target="_blank" rel="noopener">JavaScript</a></li>
+                <li><a href="https://developer.mozilla.org/docs/Web/HTML" target="_blank" rel="noopener">HTML5</a></li>
+              </ul>
+            </div>
+            <div class="skills__group">
+              <h2 class="skills__label">Tools</h2>
+              <ul class="tags">
+                <li><a href="https://github.com/" target="_blank" rel="noopener">Git &amp; GitHub</a></li>
+                <li><a href="https://www.photonengine.com/" target="_blank" rel="noopener">Photon</a></li>
+                <li><a href="https://learn.microsoft.com/dotnet/desktop/wpf/" target="_blank" rel="noopener">WPF</a></li>
+                <li><a href="https://developer.android.com/studio" target="_blank" rel="noopener">Android Studio</a></li>
+                <li><a href="https://developer.apple.com/xcode/" target="_blank" rel="noopener">Xcode</a></li>
+                <li><a href="https://www.jenkins.io/" target="_blank" rel="noopener">Jenkins</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="about__main">
+          <p class="chip">About me</p>
+          <h1 class="title title--left" id="about-title">Hi, I'm <span class="title__accent">Aaron.</span></h1>
+          <p class="about__intro">A senior game programmer, currently at Ninja Gaming.</p>
+          <p>I've been making games since 2019. I started as a game designer at BYJU'S, programmed Unity games at PlayShifu, then spent four years as a tools programmer at Kwalee building the editors and pipelines other developers rely on. Since 2025 I've worked as a senior game programmer, first at TOJ Games and now at Ninja Gaming.</p>
+          <p>Outside work I build my own games and tools: a 1v1 multiplayer arena game, a falling-sand simulation, a node-based dialogue editor and a tactical turn-based toolkit for Unity. I also team up for game jams: most recently Pondwise for Comfy Jam: Summer 2026 and To Make This Moment Last for GMTK Game Jam 2026.</p>
+          <blockquote class="about__quote">I press buttons and the computer does all the work.</blockquote>
+
+          <div class="about__actions">
+            <a class="btn btn--primary" href="#projects">View my projects</a>
+            <a class="btn" href="https://www.linkedin.com/in/aaron-fernandes-6a45601a1" target="_blank" rel="noopener">Connect on LinkedIn</a>
+          </div>
+
+          <div class="email">
+            <span class="email__label">Email</span>
+            <span class="email__address">admiralnoobdog@gmail.com</span>
+            <button class="email__copy" type="button" data-copy-email>Copy</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer wrap">
+    <p>© <span data-year>2026</span> Aaron Fernandes</p>
+    <p>Powered by his will to survive</p>
+  </footer>
+
+  <!-- Project details -->
+  <dialog class="modal" data-modal aria-labelledby="modal-title">
+    <div class="modal__inner">
+      <div class="modal__media" data-modal-media></div>
+      <div class="modal__info">
+        <p class="chip" data-modal-tag></p>
+        <h2 class="modal__title" id="modal-title" data-modal-title></h2>
+        <div class="modal__body" data-modal-body></div>
+        <ul class="tags tags--static" data-modal-stack></ul>
+        <div class="modal__links" data-modal-links></div>
+      </div>
+      <button class="pixel-btn modal__close" type="button" data-modal-close aria-label="Close">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="square" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
+      </button>
+    </div>
+  </dialog>
+
+  <div class="toast" data-toast role="status" aria-live="polite"></div>
+
+  <script src="script.js?v=32"></script>
+</body>
+</html>
