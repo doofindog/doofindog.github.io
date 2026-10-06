@@ -501,6 +501,22 @@ main { flex: 1; }
   transform: rotate(-8deg);
 }
 
+/* Award ribbon, e.g. a jam placing. */
+.card__thumb .card__ribbon {
+  position: absolute;
+  top: 10px;
+  left: 0;
+  padding: 6px 10px 6px 8px;
+  font-family: var(--font-arcade);
+  font-size: 9px;
+  line-height: 1.4;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--bg);
+  background: var(--gold);
+  box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.45);
+}
+
 /* The Pixel Arena clip has an editor watermark in its top-right corner;
    zoom in from the bottom-left so it stays out of frame. */
 .card__thumb video[data-end] {
@@ -537,6 +553,12 @@ main { flex: 1; }
   line-height: 1.15;
 }
 .card__meta { font-size: 13px; color: var(--muted); }
+.card__award {
+  display: block;
+  font-family: var(--font-pixel);
+  font-size: 13px;
+  color: var(--gold);
+}
 
 .card__tags { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 2px; }
 .card__tags span {

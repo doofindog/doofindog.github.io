@@ -68,6 +68,7 @@ const PROJECTS = [
     tags: ["Games", "Game Jam", "Unity"],
     tag: "Comfy Jam: Summer 2026",
     meta: "Unity · WebGL · Puzzle",
+    award: { rank: "2nd place", detail: "Judges: 2nd · Audience: 15th of 437" },
     thumb: { image: "assets/pondwise-cover.png" },
     media: [
       { label: "Title", image: "assets/pondwise-1.jpg", alt: "Pondwise title screen: a frog peeking over a lily pad with a Play button" },
@@ -78,6 +79,7 @@ const PROJECTS = [
       "A cozy pixel-art puzzle game made for Comfy Jam: Summer 2026. Every frog in the pond wants something different, and you rewrite the rulebook until they're all happy.",
       "Each frog checks the four tiles around it. Rules say who <strong>loves</strong> whom (must be next to them), who <strong>hates</strong> whom (can't be next to them) and who <strong>likes</strong> whom (can be, but doesn't have to be).",
       "<strong>My role:</strong> programming, alongside maukii, with art by pumpkin_mallow.",
+      "<strong>Result:</strong> 2nd place from the judges and 15th in the audience vote, out of 437 entries.",
     ],
     stack: ["Unity", "C#", "WebGL", "Game jam", "Puzzle"],
     links: [
@@ -230,14 +232,16 @@ function cardMarkup(p, i) {
     ? `<video src="${t.video}${t.start ? `#t=${t.start}` : ""}" poster="${t.poster || ""}" muted loop playsinline preload="metadata" ${t.start ? `data-start="${t.start}"` : ""} ${t.end ? `data-end="${t.end}"` : ""}></video>`
     : `<img src="${t.image}" alt="" loading="lazy">`;
   const badge = t.badge ? `<img class="card__badge" src="${t.badge}" alt="">` : "";
+  const ribbon = p.award ? `<span class="card__ribbon">${p.award.rank}</span>` : "";
   return `
     <button class="card" type="button" data-index="${i}" aria-roledescription="slide" aria-label="${p.title}">
       <span class="card__inner">
-        <span class="card__thumb">${media}${badge}</span>
+        <span class="card__thumb">${media}${badge}${ribbon}</span>
         <span class="card__body">
           <span class="card__tag">${p.tag}</span>
           <span class="card__title">${p.title}</span>
           <span class="card__meta">${p.meta}</span>
+          ${p.award ? `<span class="card__award">${p.award.detail}</span>` : ""}
           <span class="card__tags">${p.tags.map((t) => `<span>${t}</span>`).join("")}</span>
           <span class="card__cta">View project →</span>
         </span>
